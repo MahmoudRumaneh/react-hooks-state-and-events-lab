@@ -1,20 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import ShoppingList from "./ShoppingList";
 import itemData from "../data/items";
 
 function App() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [cart, setCart] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
-  // replace 'false' with a state variable that can be toggled between true and false
-  // this will be used for the Dark Mode Toggle feature
-  const appClass = false ? "App dark" : "App light"
+  const toggleDarkMode = () => {
+    setIsDarkMode((prev) => !prev);
+  };
+
+  const modeButtonText = isDarkMode ? "Light Mode" : "Dark Mode";
+
+  const addToCart = (itemName) => {
+    setCart([...cart, itemName]);
+  };
+
+  const removeFromCart = (itemName) => {
+    const updatedCart = cart.filter((item) => item !== itemName);
+    setCart(updatedCart);
+  };
+
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
 
   return (
-    <div className={appClass}>
+    <div className={`App ${isDarkMode ? "dark" : "light"}`}>
       <header>
         <h2>Shopster</h2>
-        <button>Dark Mode</button>
+        <button onClick={toggleDarkMode}>{modeButtonText}</button>
       </header>
-      <ShoppingList items={itemData} />
+      <ShoppingList
+        items={itemData}
+        cart={cart}
+        selectedCategory={selectedCategory}
+        onAddToCart={addToCart}
+        onRemoveFromCart={removeFromCart}
+        onCategoryChange={handleCategoryChange}
+      />
     </div>
   );
 }
